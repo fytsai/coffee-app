@@ -809,11 +809,9 @@ hljs.initHighlightingOnLoad();
 <h3>Model and Caffeine Data</h3>
 <div class="slideContent" >
 <ul>
-<li><p>Model:<br/>
-This app uses an exponential decay function for calculating caffeine remaining in the body, assuming a decay rate of 11% per hour.<br/>
+<li><p>This app uses an exponential decay function for calculating caffeine remaining in the body, assuming a decay rate of 11% per hour.<br/>
 Caffeine Remaining = [Caffeine in drink] * (1-11%) ^ [Hours Passed]</p></li>
-<li><p>Caffeine Data:<br/>
-This app uses chosen Starbucks beverages with different size options. Below are a few examples used in the app.  </p></li>
+<li><p>Caffeine data used are chosen Starbucks beverages with different size options. Below are a few examples used in the app.  </p></li>
 </ul>
 
 <pre><code>                  Beverage  Size Caffeine
@@ -825,8 +823,7 @@ This app uses chosen Starbucks beverages with different size options. Below are 
 </code></pre>
 
 <ul>
-<li>Assumption:<br/>
-This app assumes that a caffeine level higher than 50mg will interfere with sleep quality, so in the plot a red line is kept at 50mg for comparison.</li>
+<li>Assuming a caffeine level higher than 50mg will have negative effects on sleep quality, in the plot a red line is kept at 50mg for comparison.</li>
 </ul>
 
 </div>
@@ -845,7 +842,7 @@ At around 13:00, roughly 7 hours after drinking coffee, the level of caffeine go
 
 </section>
 <section data-transition="linear" data-transition-speed="default">
-<h3>Plot of 3 Cups: 1 in the Morning, Afternoon, and Evening, Respectively</h3>
+<h3>Plot of 3 Cups </h3>
 <div class="column column1 slideContent" >
 <p>Assuming additional cups of Caffe Mistro at 14:00 and 20:00, the plot shows a caffeine level well above 50mg throughout the night.  </p>
 
