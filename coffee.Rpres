@@ -1,0 +1,83 @@
+Caffeine Caculator
+========================================================
+author: Fang-Yi Tsai
+date: 2016/09/04
+autosize: true
+
+Project Idea
+========================================================
+
+I drink coffee every day to stay alert at work in the day and also in the evening during self-study hours.   
+  
+However, I find coffee sometimes interferes with my sleep, causing me wake up feeling "sleep-deprived", needing even more coffee.  
+  
+Over time I realize I should watch when and how much coffee I am drinking, to get benefit from it and lessen its effect on my sleep.  
+  
+This led to the idea of this app: monitor caffeine remaining in body, according to choice of coffee and time consumed.
+
+
+Model and Caffeine Data
+========================================================
+
+- This app uses an exponential decay function for calculating caffeine remaining in the body, assuming a decay rate of 11% per hour.  
+Caffeine Remaining = [Caffeine in drink] * (1-11%) ^ [Hours Passed]
+- Caffeine data used are chosen Starbucks beverages with different size options. Below are a few examples used in the app.
+```{r, echo=FALSE}
+#load caffeine data
+coffee <- read.csv("./coffee-app/stcf.csv", stringsAsFactors = FALSE) 
+head(coffee, 5)
+```
+- Assuming a caffeine level higher than 50mg will have negative effects on sleep quality, in the plot a red line is kept at 50mg for comparison.
+
+Plot for 1 Cup in the Morning
+========================================================
+
+The default option of the app is a cup of tall Caffe Mistro (with 115 mg of caffeine) at 6 am.  
+The plot shows the decay of caffeine throughout the day.
+At around 13:00, roughly 7 hours after drinking coffee, the level of caffeine goes below the red line of 50mg.
+
+
+```{r, echo=FALSE}
+library(ggplot2); library(scales)
+drinkTime1 <- 6
+data <- data.frame(
+                Hours= seq(from=0, to =24, by=1)*3600+strptime(paste(as.Date(Sys.time()), drinkTime1), format="%Y-%m-%d %H"),
+                Caffeine= 115*0.89^seq(from=0, to =24, by=1)
+
+            )
+# Plot of data, and horizontal line at 50mg.
+ggplot(data, aes(x=Hours, y=Caffeine)) + geom_line() + xlab("") + ylab("Caffeine (mg)") + scale_y_continuous(breaks=seq(0, 500, 10)) + scale_x_datetime(breaks = date_breaks("1 hour")) + theme(axis.text.x  = element_text(angle=90, vjust=0.5, size=16)) + theme(axis.title.y = element_text(size = rel(1.5), angle = 90)) + geom_hline(yintercept=50, color="red", linetype="dashed") + ggtitle("tall Caffe Mistro at 6:00")
+```
+
+Plot of 3 Cups 
+========================================================
+      
+Assuming additional cups of Caffe Mistro at 14:00 and 20:00, the plot shows a caffeine level well above 50mg throughout the night.  
+
+```{r, echo=FALSE}
+drinkTime2 <- 14
+drinkTime3 <- 20
+data <- data.frame(
+                Hours= seq(from=0, to =24, by=1)*3600+strptime(paste(as.Date(Sys.time()), 6), format="%Y-%m-%d %H"),
+                Caffeine= 115*0.89^seq(from=0, to =24, by=1)
+                + append(head(115*0.89^seq(from=0, to =24, by=1), drinkTime1+25-drinkTime2), rep(0,drinkTime2-drinkTime1),after=0) 
+                + append(head(115*0.89^seq(from=0, to =24, by=1), drinkTime1+25-drinkTime3), rep(0,drinkTime3-drinkTime1),after=0)
+            )
+# Plot of data, and horizontal line at 50mg.
+ggplot(data, aes(x=Hours, y=Caffeine)) + geom_line() + xlab("") + ylab("Caffeine (mg)") + scale_y_continuous(breaks=seq(0, 500, 10)) + scale_x_datetime(breaks = date_breaks("1 hour")) + theme(axis.text.x  = element_text(angle=90, vjust=0.5, size=16)) + theme(axis.title.y = element_text(size = rel(1.5), angle = 90)) + geom_hline(yintercept=50, color="red", linetype="dashed")+ggtitle("tall Caffe Mistro at 6:00, 14:00, 20:00")
+```
+***
+On the other hand, changing the evening option to short Brewed Decaf is able to bring the caffeine level to 50mg at arount 1 o'clock.   
+  
+```{r, echo=FALSE}
+drinkTime2 <- 14
+drinkTime3 <- 20
+data <- data.frame(
+                Hours= seq(from=0, to =24, by=1)*3600+strptime(paste(as.Date(Sys.time()), 6), format="%Y-%m-%d %H"),
+                Caffeine= 115*0.89^seq(from=0, to =24, by=1)
+                + append(head(115*0.89^seq(from=0, to =24, by=1), drinkTime1+25-drinkTime2), rep(0,drinkTime2-drinkTime1),after=0) 
+                + append(head(15*0.89^seq(from=0, to =24, by=1), drinkTime1+25-drinkTime3), rep(0,drinkTime3-drinkTime1),after=0)
+            )
+# Plot of data, and horizontal line at 50mg.
+ggplot(data, aes(x=Hours, y=Caffeine)) + geom_line() + xlab("") + ylab("Caffeine (mg)") + scale_y_continuous(breaks=seq(0, 500, 10)) + scale_x_datetime(breaks = date_breaks("1 hour")) + theme(axis.text.x  = element_text(angle=90, vjust=0.5, size=16)) + theme(axis.title.y = element_text(size = rel(1.5), angle = 90)) + geom_hline(yintercept=50, color="red", linetype="dashed") + ggtitle("tall Caffe Mistro at 6:00, 14:00, short Brewed Decaf at 20:00")
+```
